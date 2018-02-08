@@ -1,0 +1,21 @@
+背景：与通联宝付对账，确认双方的代付，代扣笔数相同。
+
+注：
+代付：放款给用户
+代扣：用户还款给我们，包括主动还款，和批扣还款
+
+步骤：
+1．	对宝付、通联的代付，代扣总笔数，对上了就可以确认双方数据一致。没对上转步骤2
+2．	拉具体哪几个商户没有对上，然后找通道方要明细的数据，看哪部分没有对上。
+Sql如下：（例）
+
+select count(trade_user_id)
+from trade_info_new 
+where repay_date >= '2018-01-01' and repay_date<= '2018-01-31'
+and (operate =2 or operate=3)
+and pay_type='bf' and reserve_account_id in (1,2,3)	
+group by reserve_account_id
+
+
+注意点：
+1.	宝付对账单有中银手续费与我们的对不上，是因为9笔在17年6月份发起，最后更新时间为18年1月份，是因为发起后没有成功，一直在重试。
